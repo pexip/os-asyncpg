@@ -1,0 +1,39 @@
+Source: asyncpg
+Section: python
+Priority: optional
+Maintainer: Piotr Ożarowski <piotr@debian.org>
+Uploaders: Debian Python Team <team+python@tracker.debian.org>
+Build-Depends: debhelper-compat (= 13), dh-python,
+               cython3 (>= 0.29.20),
+               python3-all-dev,
+               python3-setuptools,
+               python3-pytest <!nocheck>,
+               postgresql <!nocheck>,
+               postgresql-contrib <!nocheck>,
+               libpq-dev <!nocheck>,
+Standards-Version: 4.6.1
+Rules-Requires-Root: no
+Homepage: https://magicstack.github.io/asyncpg
+Vcs-Git: https://salsa.debian.org/python-team/packages/asyncpg.git
+Vcs-Browser: https://salsa.debian.org/python-team/packages/asyncpg
+
+Package: python3-asyncpg
+Architecture: any
+Depends: ${misc:Depends}, ${python3:Depends}, ${shlibs:Depends},
+Recommends: ${python3:Recommends}
+Suggests: ${python3:Suggests}
+Description: asyncio PosgtreSQL driver
+ Database interface library designed specifically for PostgreSQL and
+ Python/asyncio.
+ asyncpg is an efficient, clean implementation of PostgreSQL server binary
+ protocol for use with Python's asyncio framework.
+ It implements PostgreSQL server protocol natively and exposes its features
+ directly.
+ .
+ Features:
+  * prepared statements,
+  * scrollable cursors,
+  * partial iteration on query results,
+  * automatic encoding and decoding of composite types, arrays, and any
+    combination of those,
+  * straightforward support for custom data types

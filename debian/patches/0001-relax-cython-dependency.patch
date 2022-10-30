@@ -1,0 +1,21 @@
+From: =?utf-8?q?Piotr_O=C5=BCarowski?= <piotr@debian.org>
+Date: Fri, 7 Dec 2018 00:05:37 +0100
+Subject: relax cython dependency
+
+---
+ setup.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/setup.py b/setup.py
+index af0bcdc..0d64be2 100644
+--- a/setup.py
++++ b/setup.py
+@@ -25,7 +25,7 @@ from setuptools.command import sdist as setuptools_sdist
+ from setuptools.command import build_ext as setuptools_build_ext
+ 
+ 
+-CYTHON_DEPENDENCY = 'Cython(>=0.29.24,<0.30.0)'
++CYTHON_DEPENDENCY = 'Cython>=0.29.21'
+ 
+ # Minimal dependencies required to test asyncpg.
+ TEST_DEPENDENCIES = [

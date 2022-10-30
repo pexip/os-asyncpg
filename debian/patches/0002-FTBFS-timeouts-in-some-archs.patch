@@ -1,0 +1,32 @@
+From: John David Anglin <dave.anglin@bell.net>
+Date: Sat, 8 Dec 2018 15:15:13 -0500
+Subject: FTBFS: timeouts in some archs
+
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=915970
+Origin: https://bugs.debian.org/cgi-bin/bugreport.cgi?att=1;bug=915970;filename=asyncpg-timeout-hppa.diff;msg=5
+---
+ tests/test_pool.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/test_pool.py b/tests/test_pool.py
+index b77783e..27c4a69 100644
+--- a/tests/test_pool.py
++++ b/tests/test_pool.py
+@@ -23,7 +23,7 @@ from asyncpg import pool as pg_pool
+ _system = platform.uname().system
+ 
+ 
+-POOL_NOMINAL_TIMEOUT = 0.1
++POOL_NOMINAL_TIMEOUT = 0.5
+ 
+ 
+ class SlowResetConnection(pg_connection.Connection):
+@@ -407,7 +407,7 @@ class TestPool(tb.ConnectedTestCase):
+ 
+         task = self.loop.create_task(worker())
+         # Let the worker() run.
+-        await asyncio.sleep(0.1)
++        await asyncio.sleep(0.4)
+         # Cancel the worker.
+         task.cancel()
+         # Wait to make sure the cleanup has completed.

@@ -1,0 +1,177 @@
+asyncpg (0.27.0-1) unstable; urgency=medium
+
+  * New upstream release
+    + no longer FTBFS due to failing test (closes: 1022473)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Sun, 30 Oct 2022 22:02:26 +0100
+
+asyncpg (0.26.0-1) unstable; urgency=medium
+
+  [ Ileana Dumitrescu ]
+  * New upstream release.
+  * Refresh existing patches.
+  * d/control: Bump Standards-Version to 4.6.1 (no changes).
+               Update dh-compat version to 13.
+               Add Rules-Requires-Root line.
+  * d/copyright: Update debian year to 2022.
+
+ -- Piotr Ożarowski <piotr@debian.org>  Wed, 14 Sep 2022 20:12:37 +0200
+
+asyncpg (0.25.0-2) unstable; urgency=medium
+
+  * debian/rules
+    - fix pytest -k syntax for pytest7; Closes: #1013699
+
+ -- Sandro Tosi <morph@debian.org>  Sun, 26 Jun 2022 13:33:14 -0400
+
+asyncpg (0.25.0-1) unstable; urgency=medium
+
+  * New upstream release
+    - builds with GCC 11 (closes: 997153)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Wed, 17 Nov 2021 12:59:39 +0100
+
+asyncpg (0.24.0-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/control: Update Vcs-* fields with new Debian Python Team Salsa
+    layout.
+
+  [ Sandro Tosi ]
+  * Use the new Debian Python Team contact name and address
+
+  [ Piotr Ożarowski ]
+  * New upstream release
+
+ -- Piotr Ożarowski <piotr@debian.org>  Sun, 29 Aug 2021 15:32:42 +0200
+
+asyncpg (0.21.0-1) unstable; urgency=medium
+
+  * New upstream release
+    - builds with GCC 10 (closes: 957014)
+  * Use debhelper-compat (=12)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Tue, 11 Aug 2020 14:51:38 +0200
+
+asyncpg (0.20.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * Bump Standards-Version to 4.5.0
+
+ -- Piotr Ożarowski <piotr@debian.org>  Mon, 16 Mar 2020 10:51:35 +0100
+
+asyncpg (0.20.0-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/control: Remove ancient X-Python3-Version field.
+  * Bump Standards-Version to 4.4.1.
+
+  [ Piotr Ożarowski ]
+  * New upstream release
+    - bump minimum required Cython version to 0.29.14
+  * Mark build dependencies required for tests only with <!nocheck>
+
+ -- Piotr Ożarowski <piotr@debian.org>  Tue, 03 Dec 2019 19:43:43 +0100
+
+asyncpg (0.18.3-2) unstable; urgency=medium
+
+  [ William Grzybowski ]
+  * d/p/0002: add patch for FTBFS due to test timeouts. (Closes: #915970)
+
+  [ Ondřej Nový ]
+  * Use debhelper-compat instead of debian/compat.
+  * Bump Standards-Version to 4.4.0.
+
+ -- Piotr Ożarowski <piotr@debian.org>  Sat, 20 Jul 2019 02:02:02 +0200
+
+asyncpg (0.18.3-1) unstable; urgency=medium
+
+  * New upstream release
+  * Standards-Version bumped to 4.3.0 (no changes needed)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Fri, 04 Jan 2019 20:12:20 +0100
+
+asyncpg (0.18.2-1) unstable; urgency=medium
+
+  * New upstream release
+    - fixes large OID test on Python 3.7 (closes: 911876)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Fri, 07 Dec 2018 00:01:28 +0100
+
+asyncpg (0.17.0-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * Convert git repository from git-dpm to gbp layout
+
+  [ Piotr Ożarowski ]
+  * New upstream release
+    - requires cython3 >= 0.28.4
+
+ -- Piotr Ożarowski <piotr@debian.org>  Thu, 04 Oct 2018 21:25:23 +0200
+
+asyncpg (0.15.0-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/control: Set Vcs-* to salsa.debian.org
+  * d/copyright: Use https protocol in Format field
+
+  [ Piotr Ożarowski ]
+  * New upstream release
+    - 0001 patch removed, fixed upstream
+    - fixes FTBFS with postgresql-10 (closes: 882017)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Mon, 19 Mar 2018 09:39:30 +0100
+
+asyncpg (0.13.0-1) unstable; urgency=medium
+
+  * New upstream release
+  * Add patch to fix alignment-safe unpacking of buffers (closes: 872408,
+    thanks to Steve Langasek for the patch)
+  * Standards-Version bumped to 4.1.1 (no changes needed)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Wed, 25 Oct 2017 10:21:52 +0200
+
+asyncpg (0.12.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Piotr Ożarowski <piotr@debian.org>  Mon, 10 Jul 2017 11:21:27 +0200
+
+asyncpg (0.11.0-1) unstable; urgency=medium
+
+  * New upstream release
+  * Standards-Version bumped to 4.0.0 (no changes needed)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Tue, 20 Jun 2017 16:37:36 +0200
+
+asyncpg (0.8.4-1) unstable; urgency=medium
+
+  * New upstream release
+    - add python3-pytest to Build-Depends
+
+ -- Piotr Ożarowski <piotr@debian.org>  Tue, 10 Jan 2017 20:19:24 +0100
+
+asyncpg (0.8.1-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Piotr Ożarowski <piotr@debian.org>  Tue, 27 Dec 2016 23:31:44 +0100
+
+asyncpg (0.7.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Piotr Ożarowski <piotr@debian.org>  Tue, 29 Nov 2016 12:31:29 +0100
+
+asyncpg (0.6.3-2) unstable; urgency=medium
+
+  * Fix parsing pg_ctl output in some locales (closes: 843967, thanks to Chris
+    Lamb for the patch)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Sun, 13 Nov 2016 16:38:01 +0100
+
+asyncpg (0.6.3-1) unstable; urgency=low
+
+  * Initial release (closes: 842345)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Sat, 05 Nov 2016 19:24:18 +0100

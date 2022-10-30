@@ -1,0 +1,12 @@
+#! /usr/bin/make -f
+
+export PYBUILD_NAME=asyncpg
+export PYBUILD_TEST_ARGS=-s {build_dir}/tests
+export PYBUILD_BUILD_ARGS=build_ext --cython-always
+export PYBUILD_TEST_ARGS=-k "not test_flake8"
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_install:
+	dh_auto_install
+	find debian/python3-asyncpg/usr/lib \( -name '*.c' -or -name '*.h' -or -name '*.px[di]' -or -name '*.pyx' \) -delete
