@@ -1,8 +1,9 @@
 Source: asyncpg
 Section: python
 Priority: optional
-Maintainer: Piotr Ożarowski <piotr@debian.org>
-Uploaders: Debian Python Team <team+python@tracker.debian.org>
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Piotr Ożarowski <piotr@debian.org>
+XSBC-Pexip-Original-Uploaders: Debian Python Team <team+python@tracker.debian.org>
 Build-Depends: debhelper-compat (= 13), dh-python,
                cython3 (>= 0.29.20),
                python3-all-dev,
@@ -16,6 +17,7 @@ Rules-Requires-Root: no
 Homepage: https://magicstack.github.io/asyncpg
 Vcs-Git: https://salsa.debian.org/python-team/packages/asyncpg.git
 Vcs-Browser: https://salsa.debian.org/python-team/packages/asyncpg
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ bookworm
 
 Package: python3-asyncpg
 Architecture: any
