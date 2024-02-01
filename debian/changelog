@@ -1,3 +1,10 @@
+asyncpg (0.27.0-1pexip6) pexip; urgency=medium
+
+  * d/p/pexip-0001-TLSUpgradeProto-issue-729.patch: fix getting IPv6 addr/port
+    getsockname() returns a 4-tuple for v6, vs a 2-tuple for v4
+
+ -- Huw Jones <huw@pexip.com>  Thu, 01 Feb 2024 15:07:01 +0000
+
 asyncpg (0.27.0-1pexip5) pexip; urgency=medium
 
   * TLSUpgradeProto: don't set multiple results for an event
