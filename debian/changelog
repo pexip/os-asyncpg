@@ -1,3 +1,10 @@
+asyncpg (0.27.0-1pexip5) pexip; urgency=medium
+
+  * TLSUpgradeProto: don't set multiple results for an event
+    Fix for https://github.com/MagicStack/asyncpg/issues/729
+
+ -- Huw Jones <huw@pexip.com>  Thu, 01 Feb 2024 14:49:21 +0000
+
 asyncpg (0.27.0-1pexip2) pexip; urgency=medium
 
   * No-change rebuild
