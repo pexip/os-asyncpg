@@ -1,3 +1,32 @@
+asyncpg (0.30.0-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Temporarily skip test_connect due to test data needing an update for
+    Python 3.13.2 (Closes: #1096256).
+
+ -- Simon Quigley <tsimonq2@debian.org>  Thu, 27 Feb 2025 13:44:30 -0600
+
+asyncpg (0.30.0-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release:
+    - Fix build with Python 3.13 (closes: #1081995).
+    - Notice also the MERGE command (closes: #1084240).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 30 Oct 2024 00:19:05 +0000
+
+asyncpg (0.29.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Piotr Ożarowski <piotr@debian.org>  Sat, 27 Jan 2024 10:15:20 +0100
+
+asyncpg (0.28.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Piotr Ożarowski <piotr@debian.org>  Mon, 10 Jul 2023 14:59:09 +0200
+
 asyncpg (0.27.0-1) unstable; urgency=medium
 
   * New upstream release
