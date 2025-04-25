@@ -8,6 +8,7 @@ performance.png
 pyproject.toml
 setup.py
 asyncpg/__init__.py
+asyncpg/_asyncio_compat.py
 asyncpg/_version.py
 asyncpg/cluster.py
 asyncpg/compat.py
@@ -46,6 +47,7 @@ asyncpg/pgproto/hton.h
 asyncpg/pgproto/hton.pxd
 asyncpg/pgproto/pgproto.c
 asyncpg/pgproto/pgproto.pxd
+asyncpg/pgproto/pgproto.pyi
 asyncpg/pgproto/pgproto.pyx
 asyncpg/pgproto/tohex.h
 asyncpg/pgproto/tohex.pxd
@@ -80,6 +82,7 @@ asyncpg/protocol/prepared_stmt.pxd
 asyncpg/protocol/prepared_stmt.pyx
 asyncpg/protocol/protocol.c
 asyncpg/protocol/protocol.pxd
+asyncpg/protocol/protocol.pyi
 asyncpg/protocol/protocol.pyx
 asyncpg/protocol/scram.pxd
 asyncpg/protocol/scram.pyx
@@ -118,6 +121,7 @@ tests/test_exceptions.py
 tests/test_execute.py
 tests/test_introspection.py
 tests/test_listeners.py
+tests/test_logging.py
 tests/test_pool.py
 tests/test_prepare.py
 tests/test_record.py
@@ -137,4 +141,5 @@ tests/certs/client_ca.cert.pem
 tests/certs/client_ca.key.pem
 tests/certs/gen.py
 tests/certs/server.cert.pem
+tests/certs/server.crl.pem
 tests/certs/server.key.pem

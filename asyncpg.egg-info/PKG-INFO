@@ -1,14 +1,11 @@
 Metadata-Version: 2.1
 Name: asyncpg
-Version: 0.27.0
+Version: 0.30.0
 Summary: An asyncio PostgreSQL driver
-Home-page: https://github.com/MagicStack/asyncpg
-Author: MagicStack Inc
-Author-email: hello@magic.io
+Author-email: MagicStack Inc <hello@magic.io>
 License: Apache License, Version 2.0
-Platform: macOS
-Platform: POSIX
-Platform: Windows
+Project-URL: github, https://github.com/MagicStack/asyncpg
+Keywords: database,postgres
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Framework :: AsyncIO
 Classifier: Intended Audience :: Developers
@@ -17,18 +14,33 @@ Classifier: Operating System :: POSIX
 Classifier: Operating System :: MacOS :: MacOS X
 Classifier: Operating System :: Microsoft :: Windows
 Classifier: Programming Language :: Python :: 3 :: Only
-Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
 Classifier: Programming Language :: Python :: Implementation :: CPython
 Classifier: Topic :: Database :: Front-Ends
-Requires-Python: >=3.7.0
-Provides-Extra: docs
-Provides-Extra: test
-Provides-Extra: dev
+Requires-Python: >=3.8.0
+Description-Content-Type: text/x-rst
 License-File: LICENSE
 License-File: AUTHORS
+Requires-Dist: async_timeout>=4.0.3; python_version < "3.11.0"
+Provides-Extra: gssauth
+Requires-Dist: gssapi; platform_system != "Windows" and extra == "gssauth"
+Requires-Dist: sspilib; platform_system == "Windows" and extra == "gssauth"
+Provides-Extra: test
+Requires-Dist: flake8~=6.1; extra == "test"
+Requires-Dist: flake8-pyi~=24.1.0; extra == "test"
+Requires-Dist: distro~=1.9.0; extra == "test"
+Requires-Dist: uvloop>=0.15.3; (platform_system != "Windows" and python_version < "3.14.0") and extra == "test"
+Requires-Dist: gssapi; platform_system == "Linux" and extra == "test"
+Requires-Dist: k5test; platform_system == "Linux" and extra == "test"
+Requires-Dist: sspilib; platform_system == "Windows" and extra == "test"
+Requires-Dist: mypy~=1.8.0; extra == "test"
+Provides-Extra: docs
+Requires-Dist: Sphinx~=8.1.3; extra == "docs"
+Requires-Dist: sphinx_rtd_theme>=1.2.2; extra == "docs"
 
 asyncpg -- A fast PostgreSQL Database Client Library for Python/asyncio
 =======================================================================
@@ -45,9 +57,10 @@ of PostgreSQL server binary protocol for use with Python's ``asyncio``
 framework.  You can read more about asyncpg in an introductory
 `blog post <http://magic.io/blog/asyncpg-1m-rows-from-postgres-to-python/>`_.
 
-asyncpg requires Python 3.7 or later and is supported for PostgreSQL
-versions 9.5 to 15.  Older PostgreSQL versions or other databases implementing
-the PostgreSQL protocol *may* work, but are not being actively tested.
+asyncpg requires Python 3.8 or later and is supported for PostgreSQL
+versions 9.5 to 17.  Other PostgreSQL versions or other databases
+implementing the PostgreSQL protocol *may* work, but are not being
+actively tested.
 
 
 Documentation
@@ -60,15 +73,14 @@ The project documentation can be found
 Performance
 -----------
 
-In our testing asyncpg is, on average, **3x** faster than psycopg2
-(and its asyncio variant -- aiopg).
+In our testing asyncpg is, on average, **5x** faster than psycopg3.
 
-.. image:: https://raw.githubusercontent.com/MagicStack/asyncpg/master/performance.png
-    :target: https://gistpreview.github.io/?b8eac294ac85da177ff82f784ff2cb60
+.. image:: https://raw.githubusercontent.com/MagicStack/asyncpg/master/performance.png?fddca40ab0
+    :target: https://gistpreview.github.io/?0ed296e93523831ea0918d42dd1258c2
 
 The above results are a geometric mean of benchmarks obtained with PostgreSQL
 `client driver benchmarking toolbench <https://github.com/MagicStack/pgbench>`_
-in November 2020 (click on the chart to see full details).
+in June 2023 (click on the chart to see full details).
 
 
 Features
@@ -91,10 +103,17 @@ This enables asyncpg to have easy-to-use support for:
 Installation
 ------------
 
-asyncpg is available on PyPI and has no dependencies.
-Use pip to install::
+asyncpg is available on PyPI.  When not using GSSAPI/SSPI authentication it
+has no dependencies.  Use pip to install::
 
     $ pip install asyncpg
+
+If you need GSSAPI/SSPI authentication, use::
+
+    $ pip install 'asyncpg[gssauth]'
+
+For more details, please `see the documentation
+<https://magicstack.github.io/asyncpg/current/installation.html>`_.
 
 
 Basic Usage
@@ -114,8 +133,7 @@ Basic Usage
         )
         await conn.close()
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(run())
+    asyncio.run(run())
 
 
 License
