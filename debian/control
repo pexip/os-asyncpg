@@ -7,11 +7,13 @@ XSBC-Pexip-Original-Uploaders: Debian Python Team <team+python@tracker.debian.or
 Build-Depends: debhelper-compat (= 13), dh-python,
                cython3 (>= 0.29.20),
                python3-all-dev,
+               python3-distro,
                python3-setuptools,
                python3-pytest <!nocheck>,
                postgresql <!nocheck>,
                postgresql-contrib <!nocheck>,
                libpq-dev <!nocheck>,
+               python3-uvloop <!nocheck>,
 Standards-Version: 4.6.1
 Rules-Requires-Root: no
 Homepage: https://magicstack.github.io/asyncpg

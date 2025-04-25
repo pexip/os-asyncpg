@@ -1,0 +1,22 @@
+Description: Skip test_connect to work around upstream bug
+Author: Simon Quigley <tsimonq2@debian.org>
+Origin: vendor
+Bug: https://github.com/MagicStack/asyncpg/issues/1236
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1096256
+Bug-Fedora: https://src.fedoraproject.org/rpms/python-asyncpg/c/40bed9685f3285bbf18fcbf50123834961a09c48
+Last-Update: 2025-02-27
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/tests/test_connect.py
++++ b/tests/test_connect.py
+@@ -1232,10 +1232,6 @@ class TestConnectParams(tb.TestCase):
+                 )
+             })
+ 
+-    def test_connect_params(self):
+-        for testcase in self.TESTS:
+-            self.run_testcase(testcase)
+-
+     def test_connect_pgpass_regular(self):
+         passfile = tempfile.NamedTemporaryFile('w+t', delete=False)
+         passfile.write(textwrap.dedent(R'''

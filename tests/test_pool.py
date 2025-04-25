@@ -8,6 +8,7 @@
 import asyncio
 import inspect
 import os
+import pathlib
 import platform
 import random
 import textwrap
@@ -17,8 +18,8 @@ import unittest
 import asyncpg
 from asyncpg import _testbase as tb
 from asyncpg import connection as pg_connection
-from asyncpg import cluster as pg_cluster
 from asyncpg import pool as pg_pool
+from asyncpg import cluster as pg_cluster
 
 _system = platform.uname().system
 
@@ -135,15 +136,32 @@ class TestPool(tb.ConnectedTestCase):
 
     async def test_pool_07(self):
         cons = set()
+        connect_called = 0
+        init_called = 0
+        setup_called = 0
+        reset_called = 0
+
+        async def connect(*args, **kwargs):
+            nonlocal connect_called
+            connect_called += 1
+            return await pg_connection.connect(*args, **kwargs)
 
         async def setup(con):
+            nonlocal setup_called
             if con._con not in cons:  # `con` is `PoolConnectionProxy`.
                 raise RuntimeError('init was not called before setup')
+            setup_called += 1
 
         async def init(con):
+            nonlocal init_called
             if con in cons:
                 raise RuntimeError('init was called more than once')
             cons.add(con)
+            init_called += 1
+
+        async def reset(con):
+            nonlocal reset_called
+            reset_called += 1
 
         async def user(pool):
             async with pool.acquire() as con:
@@ -151,13 +169,30 @@ class TestPool(tb.ConnectedTestCase):
                     raise RuntimeError('init was not called')
 
         async with self.create_pool(database='postgres',
-                                    min_size=2, max_size=5,
+                                    min_size=2,
+                                    max_size=5,
+                                    connect=connect,
                                     init=init,
-                                    setup=setup) as pool:
+                                    setup=setup,
+                                    reset=reset) as pool:
             users = asyncio.gather(*[user(pool) for _ in range(10)])
             await users
 
         self.assertEqual(len(cons), 5)
+        self.assertEqual(connect_called, 5)
+        self.assertEqual(init_called, 5)
+        self.assertEqual(setup_called, 10)
+        self.assertEqual(reset_called, 10)
+
+        async def bad_connect(*args, **kwargs):
+            return 1
+
+        with self.assertRaisesRegex(
+            asyncpg.InterfaceError,
+            "expected pool connect callback to return an instance of "
+            "'asyncpg\\.connection\\.Connection', got 'int'"
+        ):
+            await self.create_pool(database='postgres', connect=bad_connect)
 
     async def test_pool_08(self):
         pool = await self.create_pool(database='postgres',
@@ -740,6 +775,17 @@ class TestPool(tb.ConnectedTestCase):
                         self.assertEqual(pool.get_size(), 3)
                         self.assertEqual(pool.get_idle_size(), 0)
 
+    async def test_pool_closing(self):
+        async with self.create_pool() as pool:
+            self.assertFalse(pool.is_closing())
+            await pool.close()
+            self.assertTrue(pool.is_closing())
+
+        async with self.create_pool() as pool:
+            self.assertFalse(pool.is_closing())
+            pool.terminate()
+            self.assertTrue(pool.is_closing())
+
     async def test_pool_handles_transaction_exit_in_asyncgen_1(self):
         pool = await self.create_pool(database='postgres',
                                       min_size=1, max_size=1)
@@ -959,53 +1005,72 @@ class TestPool(tb.ConnectedTestCase):
         await pool.release(conn)
 
 
-@unittest.skipIf(os.environ.get('PGHOST'), 'using remote cluster for testing')
-class TestHotStandby(tb.ClusterTestCase):
+@unittest.skipIf(os.environ.get('PGHOST'), 'unmanaged cluster')
+class TestPoolReconnectWithTargetSessionAttrs(tb.ClusterTestCase):
+
     @classmethod
     def setup_cluster(cls):
-        cls.master_cluster = cls.new_cluster(pg_cluster.TempCluster)
-        cls.start_cluster(
-            cls.master_cluster,
-            server_settings={
-                'max_wal_senders': 10,
-                'wal_level': 'hot_standby'
-            }
+        cls.cluster = cls.new_cluster(pg_cluster.TempCluster)
+        cls.start_cluster(cls.cluster)
+
+    async def simulate_cluster_recovery_mode(self):
+        port = self.cluster.get_connection_spec()['port']
+        await self.loop.run_in_executor(
+            None,
+            lambda: self.cluster.stop()
         )
 
-        con = None
+        # Simulate recovery mode
+        (pathlib.Path(self.cluster._data_dir) / 'standby.signal').touch()
 
-        try:
-            con = cls.loop.run_until_complete(
-                cls.master_cluster.connect(
-                    database='postgres', user='postgres', loop=cls.loop))
-
-            cls.loop.run_until_complete(
-                con.execute('''
-                    CREATE ROLE replication WITH LOGIN REPLICATION
-                '''))
-
-            cls.master_cluster.trust_local_replication_by('replication')
-
-            conn_spec = cls.master_cluster.get_connection_spec()
-
-            cls.standby_cluster = cls.new_cluster(
-                pg_cluster.HotStandbyCluster,
-                cluster_kwargs={
-                    'master': conn_spec,
-                    'replication_user': 'replication'
-                }
+        await self.loop.run_in_executor(
+            None,
+            lambda: self.cluster.start(
+                port=port,
+                server_settings=self.get_server_settings(),
             )
-            cls.start_cluster(
-                cls.standby_cluster,
-                server_settings={
-                    'hot_standby': True
-                }
-            )
+        )
 
-        finally:
-            if con is not None:
-                cls.loop.run_until_complete(con.close())
+    async def test_full_reconnect_on_node_change_role(self):
+        if self.cluster.get_pg_version() < (12, 0):
+            self.skipTest("PostgreSQL < 12 cannot support standby.signal")
+            return
 
+        pool = await self.create_pool(
+            min_size=1,
+            max_size=1,
+            target_session_attrs='primary'
+        )
+
+        # Force a new connection to be created
+        await pool.fetchval('SELECT 1')
+
+        await self.simulate_cluster_recovery_mode()
+
+        # current pool connection info cache is expired,
+        # but we don't know it yet
+        with self.assertRaises(asyncpg.TargetServerAttributeNotMatched) as cm:
+            await pool.execute('SELECT 1')
+
+        self.assertEqual(
+            cm.exception.args[0],
+            "None of the hosts match the target attribute requirement "
+            "<SessionAttribute.primary: 'primary'>"
+        )
+
+        # force reconnect
+        with self.assertRaises(asyncpg.TargetServerAttributeNotMatched) as cm:
+            await pool.execute('SELECT 1')
+
+        self.assertEqual(
+            cm.exception.args[0],
+            "None of the hosts match the target attribute requirement "
+            "<SessionAttribute.primary: 'primary'>"
+        )
+
+
+@unittest.skipIf(os.environ.get('PGHOST'), 'using remote cluster for testing')
+class TestHotStandby(tb.HotStandbyTestCase):
     def create_pool(self, **kwargs):
         conn_spec = self.standby_cluster.get_connection_spec()
         conn_spec.update(kwargs)

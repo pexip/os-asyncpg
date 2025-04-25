@@ -9,10 +9,10 @@ Origin: https://bugs.debian.org/cgi-bin/bugreport.cgi?att=1;bug=915970;filename=
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/tests/test_pool.py b/tests/test_pool.py
-index b77783e..27c4a69 100644
+index 3f10ae5..75c9863 100644
 --- a/tests/test_pool.py
 +++ b/tests/test_pool.py
-@@ -23,7 +23,7 @@ from asyncpg import pool as pg_pool
+@@ -24,7 +24,7 @@ from asyncpg import cluster as pg_cluster
  _system = platform.uname().system
  
  
@@ -21,7 +21,7 @@ index b77783e..27c4a69 100644
  
  
  class SlowResetConnection(pg_connection.Connection):
-@@ -407,7 +407,7 @@ class TestPool(tb.ConnectedTestCase):
+@@ -442,7 +442,7 @@ class TestPool(tb.ConnectedTestCase):
  
          task = self.loop.create_task(worker())
          # Let the worker() run.
