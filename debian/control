@@ -17,7 +17,7 @@ Rules-Requires-Root: no
 Homepage: https://magicstack.github.io/asyncpg
 Vcs-Git: https://salsa.debian.org/python-team/packages/asyncpg.git
 Vcs-Browser: https://salsa.debian.org/python-team/packages/asyncpg
-XS-Pexip-Upstream: http://ftp.debian.org/debian/ bookworm
+XS-Pexip-Upstream: http://deb.debian.org/debian/ trixie
 
 Package: python3-asyncpg
 Architecture: any
