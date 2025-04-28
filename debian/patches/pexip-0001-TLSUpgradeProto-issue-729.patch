@@ -16,9 +16,9 @@ Fixes #729
  tests/test_connect.py         | 55 +++++++++++++++++++++++++++++++++++
  3 files changed, 99 insertions(+)
 
---- a/asyncpg/_testbase/__init__.py
-+++ b/asyncpg/_testbase/__init__.py
-@@ -13,6 +13,7 @@
+--- asyncpg.orig/asyncpg/_testbase/__init__.py
++++ asyncpg/asyncpg/_testbase/__init__.py
+@@ -13,6 +13,7 @@ import inspect
  import logging
  import os
  import re
@@ -26,10 +26,10 @@ Fixes #729
  import textwrap
  import time
  import traceback
-@@ -435,3 +436,41 @@
-             self.con = None
-         finally:
-             super().tearDown()
+@@ -541,3 +542,41 @@ class HotStandbyTestCase(ClusterTestCase
+             kwargs
+         )
+         return pg_connection.connect(**conn_spec, loop=cls.loop)
 +
 +
 +class InstrumentedServer:
@@ -68,9 +68,9 @@ Fixes #729
 +    def stop(self):
 +        """Stop the server."""
 +        self._server.close()
---- a/asyncpg/connect_utils.py
-+++ b/asyncpg/connect_utils.py
-@@ -654,6 +654,11 @@
+--- asyncpg.orig/asyncpg/connect_utils.py
++++ asyncpg/asyncpg/connect_utils.py
+@@ -772,6 +772,11 @@ class TLSUpgradeProto(asyncio.Protocol):
          self.ssl_is_advisory = ssl_is_advisory
  
      def data_received(self, data):
@@ -82,9 +82,9 @@ Fixes #729
          if data == b'S':
              self.on_data.set_result(True)
          elif (self.ssl_is_advisory and
---- a/tests/test_connect.py
-+++ b/tests/test_connect.py
-@@ -16,11 +16,13 @@
+--- asyncpg.orig/tests/test_connect.py
++++ asyncpg/tests/test_connect.py
+@@ -18,11 +18,13 @@ import ssl
  import stat
  import tempfile
  import textwrap
@@ -96,12 +96,12 @@ Fixes #729
  import weakref
 +from unittest import mock
  
- import asyncpg
- from asyncpg import _testbase as tb
-@@ -1740,3 +1742,55 @@
-             self.assertIn('in test_no_explicit_close_with_debug', msg)
-         finally:
-             self.loop.set_debug(olddebug)
+ import distro
+ 
+@@ -2252,3 +2254,55 @@ def _get_connected_host(con):
+     if isinstance(peername, tuple):
+         peername = "".join((str(s) for s in peername if s))
+     return peername
 +
 +
 +class TestMisbehavingServer(tb.TestCase):

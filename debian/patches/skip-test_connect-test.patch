@@ -7,9 +7,9 @@ Bug-Fedora: https://src.fedoraproject.org/rpms/python-asyncpg/c/40bed9685f3285bb
 Last-Update: 2025-02-27
 ---
 This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
---- a/tests/test_connect.py
-+++ b/tests/test_connect.py
-@@ -1232,10 +1232,6 @@ class TestConnectParams(tb.TestCase):
+--- asyncpg.orig/tests/test_connect.py
++++ asyncpg/tests/test_connect.py
+@@ -1234,10 +1234,6 @@ class TestConnectParams(tb.TestCase):
                  )
              })
  
