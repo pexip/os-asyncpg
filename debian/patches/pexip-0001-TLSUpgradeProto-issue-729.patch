@@ -16,6 +16,8 @@ Fixes #729
  tests/test_connect.py         | 55 +++++++++++++++++++++++++++++++++++
  3 files changed, 99 insertions(+)
 
+Index: asyncpg/asyncpg/_testbase/__init__.py
+===================================================================
 --- asyncpg.orig/asyncpg/_testbase/__init__.py
 +++ asyncpg/asyncpg/_testbase/__init__.py
 @@ -13,6 +13,7 @@ import inspect
@@ -68,6 +70,8 @@ Fixes #729
 +    def stop(self):
 +        """Stop the server."""
 +        self._server.close()
+Index: asyncpg/asyncpg/connect_utils.py
+===================================================================
 --- asyncpg.orig/asyncpg/connect_utils.py
 +++ asyncpg/asyncpg/connect_utils.py
 @@ -772,6 +772,11 @@ class TLSUpgradeProto(asyncio.Protocol):
@@ -82,6 +86,8 @@ Fixes #729
          if data == b'S':
              self.on_data.set_result(True)
          elif (self.ssl_is_advisory and
+Index: asyncpg/tests/test_connect.py
+===================================================================
 --- asyncpg.orig/tests/test_connect.py
 +++ asyncpg/tests/test_connect.py
 @@ -18,11 +18,13 @@ import ssl
@@ -151,6 +157,6 @@ Fixes #729
 +        # server will close the connection after writing all the data.
 +        with (mock.patch.object(self.loop, "create_connection", side_effect=_mock_create_conn),
 +              self.assertRaises(ConnectionResetError)):
-+            await connection.connect(**conn_spec, ssl=True, loop=self.loop)
++            await pg_connection.connect(**conn_spec, ssl=True, loop=self.loop)
 +
 +        server.stop()
